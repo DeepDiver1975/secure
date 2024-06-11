@@ -43,6 +43,7 @@ func TestContentSecurityPolicyBuilder_Build_SingleDirective(t *testing.T) {
 				},
 			}
 			got, err := builder.Build()
+
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ContentSecurityPolicyBuilder.Build() error = %v, wantErr %v", err, tt.wantErr)
 
@@ -59,7 +60,7 @@ func TestContentSecurityPolicyBuilder_Build_SingleDirective(t *testing.T) {
 func TestContentSecurityPolicyBuilder_Build_MultipleDirectives(t *testing.T) {
 	tests := []struct {
 		name       string
-		directives map[string]([]string)
+		directives map[string][]string
 		builder    Builder
 		wantParts  []string
 		wantFull   string
@@ -67,7 +68,7 @@ func TestContentSecurityPolicyBuilder_Build_MultipleDirectives(t *testing.T) {
 	}{
 		{
 			name: "multiple valid directives",
-			directives: map[string]([]string){
+			directives: map[string][]string{
 				"default-src":               {"'self'", "example.com", "*.example.com"},
 				"sandbox":                   {"allow-scripts"},
 				"frame-ancestors":           {"'self'", "http://*.example.com"},
@@ -96,6 +97,7 @@ func TestContentSecurityPolicyBuilder_Build_MultipleDirectives(t *testing.T) {
 				Directives: tt.directives,
 			}
 			got, err := builder.Build()
+
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ContentSecurityPolicyBuilder.Build() error = %v, wantErr %v", err, tt.wantErr)
 
@@ -108,6 +110,7 @@ func TestContentSecurityPolicyBuilder_Build_MultipleDirectives(t *testing.T) {
 
 			{
 				startsWithDirective := false
+
 				for directive := range tt.directives {
 					if strings.HasPrefix(got, directive) {
 						startsWithDirective = true
@@ -115,14 +118,16 @@ func TestContentSecurityPolicyBuilder_Build_MultipleDirectives(t *testing.T) {
 						break
 					}
 				}
+
 				if !startsWithDirective {
 					t.Errorf("ContentSecurityPolicyBuilder.Build() = '%v', does not start with directive name", got)
 				}
 			}
 
 			if strings.HasSuffix(got, " ") {
-				t.Errorf("ContentSecurityPolicyBuilder.Build() = '%v', ends on whitespace", got)
+				t.Errorf("ContentSecurityPolicyBuilder.Bui	ld() = '%v', ends on whitespace", got)
 			}
+
 			if strings.HasSuffix(got, ";") {
 				t.Errorf("ContentSecurityPolicyBuilder.Build() = '%v', ends on semi-colon", got)
 			}
