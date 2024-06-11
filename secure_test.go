@@ -11,7 +11,7 @@ import (
 )
 
 //nolint:gochecknoglobals
-var myHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+var myHandler = http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 	_, _ = w.Write([]byte("bar"))
 })
 
@@ -214,7 +214,7 @@ func TestBadHostHandler(t *testing.T) {
 		AllowedHosts: []string{"www.example.com", "sub.example.com"},
 	})
 
-	badHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	badHandler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		http.Error(w, "BadHost", http.StatusInternalServerError)
 	})
 
@@ -1280,7 +1280,7 @@ func TestCustomSecureContextKey(t *testing.T) {
 
 	var actual *http.Request
 
-	hf := func(w http.ResponseWriter, r *http.Request) {
+	hf := func(_ http.ResponseWriter, r *http.Request) {
 		actual = r
 	}
 
@@ -1306,7 +1306,7 @@ func TestMultipleCustomSecureContextKeys(t *testing.T) {
 
 	var actual *http.Request
 
-	hf := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	hf := http.HandlerFunc(func(_ http.ResponseWriter, r *http.Request) {
 		actual = r
 	})
 
@@ -1322,7 +1322,7 @@ func TestMultipleCustomSecureContextKeys(t *testing.T) {
 
 func TestAllowRequestFuncTrue(t *testing.T) {
 	s := New(Options{
-		AllowRequestFunc: func(r *http.Request) bool { return true },
+		AllowRequestFunc: func(_ *http.Request) bool { return true },
 	})
 
 	res := httptest.NewRecorder()
@@ -1337,7 +1337,7 @@ func TestAllowRequestFuncTrue(t *testing.T) {
 
 func TestAllowRequestFuncFalse(t *testing.T) {
 	s := New(Options{
-		AllowRequestFunc: func(r *http.Request) bool { return false },
+		AllowRequestFunc: func(_ *http.Request) bool { return false },
 	})
 
 	res := httptest.NewRecorder()
@@ -1351,9 +1351,9 @@ func TestAllowRequestFuncFalse(t *testing.T) {
 
 func TestBadRequestHandler(t *testing.T) {
 	s := New(Options{
-		AllowRequestFunc: func(r *http.Request) bool { return false },
+		AllowRequestFunc: func(_ *http.Request) bool { return false },
 	})
-	badRequestFunc := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	badRequestFunc := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		http.Error(w, "custom error", http.StatusConflict)
 	})
 	s.SetBadRequestHandler(badRequestFunc)
